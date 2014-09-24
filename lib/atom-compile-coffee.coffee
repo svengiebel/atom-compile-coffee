@@ -22,20 +22,32 @@ compileCoffee = (filepath) ->
   # GET CONFIGS
   bareJs = atom.config.get('atom-compile-coffee.compileBareJavascript')
   generateMaps = atom.config.get('atom-compile-coffee.generateMaps')
-  
+
   # COMPILE LESS TO CSS
   getFileContents filepath, (content) ->
     throw err if !content
-    
-    jsContent = coffee.compile(content, { bare: bareJs, map : generateMaps })
+    op = { bare: bareJs, sourceMap : generateMaps }
+    op.file = filepath.split('\\').pop().split('/').pop() if generateMaps
+    op.sourceRoot = "/"
+    op.sourceFiles = op.file
+    op.generatedFile = op.file.replace(".coffee", ".js.map")
+    jsContent = coffee.compile(content, op)
+    v3SourceMap = jsContent.v3SourceMap if jsContent.v3SourceMap
     coffeeToJsPath = filepath.replace(".coffee", ".js")
+    coffeeToMapPath = filepath.replace(".coffee", ".js.map")
 
+    jsContent = jsContent.js || jsContent
+    ##debugger
     # SAVE COMPILED FILE
-    fs.writeFile( coffeeToJsPath, jsContent, (err) ->
-      console.log "FAILED TO COMPILE COFFEE: " + coffeeToJsPath, err if err
-      console.log "FRESH COFFEE COMPILED TO: " + coffeeToJsPath
-
+    fs.writeFile( coffeeToJsPath, "#{jsContent}\n\/\/@ sourceMappingURL=#{op.file}" , (err) ->
+        console.log "FAILED TO COMPILE COFFEE: " + coffeeToJsPath, err if err
+        console.log "FRESH COFFEE COMPILED TO: " + coffeeToJsPath
       )
+    # SAVE source map FILE
+    if generateMaps then fs.writeFile( coffeeToMapPath, v3SourceMap, (err) ->
+      console.log "FAILED TO CREATE MAP COFFEE: " + coffeeToMapPath, err if err
+      console.log "FRESH COFFEE SPILLED ON MAP TO: " + coffeeToMapPath
+    )
 
 atomCompileCoffee = ->
 
