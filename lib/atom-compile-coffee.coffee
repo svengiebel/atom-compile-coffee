@@ -21,12 +21,13 @@ compileCoffee = (filepath) ->
 
   # GET CONFIGS
   bareJs = atom.config.get('atom-compile-coffee.compileBareJavascript')
-
+  generateMaps = atom.config.get('atom-compile-coffee.generateMaps')
+  
   # COMPILE LESS TO CSS
   getFileContents filepath, (content) ->
     throw err if !content
-
-    jsContent = coffee.compile(content, { bare: bareJs })
+    
+    jsContent = coffee.compile(content, { bare: bareJs, map : generateMaps })
     coffeeToJsPath = filepath.replace(".coffee", ".js")
 
     # SAVE COMPILED FILE
@@ -61,12 +62,13 @@ atomCompileCoffee = ->
 
 module.exports =
 
-  configDefaults:
-    compileBareJavascript:  false
-
   activate: (state) =>
     atom.workspaceView.command "core:save", => atomCompileCoffee()
 
   deactivate: ->
 
   serialize: ->
+
+module.exports.configDefaults =
+    compileBareJavascript:  false
+    generateMaps : true
