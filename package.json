@@ -1,11 +1,13 @@
 {
   "name": "atom-compile-coffee",
   "main": "./lib/atom-compile-coffee",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "description": "This Atom.io Package compiles .coffee Files on save to .js files. (myJavascript.coffee -> myJavascript.js)",
   "activationCommands": {
-    "atom-text-editor": ["core:save"]
+    "atom-text-editor": [
+      "core:save"
+    ]
   },
   "repository": {
     "type": "git",
