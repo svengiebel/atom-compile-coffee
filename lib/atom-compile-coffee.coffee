@@ -38,7 +38,7 @@ compileCoffee = (filepath) ->
 
 atomCompileCoffee = ->
 
-  currentEditor = atom.workspace.getActiveEditor()
+  currentEditor = atom.workspace.getActiveTextEditor()
 
   if currentEditor
 
@@ -48,7 +48,7 @@ atomCompileCoffee = ->
     if currentFilePath.substr(-7) == ".coffee"
 
       # SET CONFIG VARS
-      projectPath      = atom.project.getPath()
+      projectPath      = atom.project.getPaths()
 
       # COMPILE FILE
       compileCoffee(currentFilePath)
@@ -58,14 +58,16 @@ atomCompileCoffee = ->
 
 
 # MODULE EXPORT
-
 module.exports =
 
-  configDefaults:
-    compileBareJavascript:  false
-
   activate: (state) =>
-    atom.workspaceView.command "core:save", => atomCompileCoffee()
+    atom.config.set('atom-compile-coffee.compileBareJavascript', false)
+
+    atom.workspace.observeTextEditors( (editor) ->
+      editor.onDidSave( () ->
+        atomCompileCoffee()
+      )
+    )
 
   deactivate: ->
 
