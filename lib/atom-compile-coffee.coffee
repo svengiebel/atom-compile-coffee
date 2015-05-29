@@ -60,8 +60,12 @@ atomCompileCoffee = ->
 # MODULE EXPORT
 module.exports =
 
+  config:
+    compileBareJavascript:
+      type: 'boolean',
+      default: false
+
   activate: (state) =>
-    atom.config.set('atom-compile-coffee.compileBareJavascript', false)
 
     atom.workspace.observeTextEditors( (editor) ->
       editor.onDidSave( () ->
