@@ -1,3 +1,6 @@
+## No longer maintained
+ i will rewrite this package if i have time, feel free to fork/contribute to this one.
+
 # Atom Compile Coffee
 
 ![](http://coffeescript.org/documentation/images/logo.png)
